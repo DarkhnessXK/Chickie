@@ -3,6 +3,7 @@ import logging
 from uuid import uuid4
 from typing import List, Optional, Any
 from asyncio import Lock
+from src.misc import ConsoleColors
 
 
 class Repository:
@@ -16,14 +17,13 @@ class Repository:
             model (Any): The Pydantic model representing the database table.
             connection (Connection): The aiopg database connection.
         Example:
-            async with DatabaseConnectionManager() as connection:
-                repository = Repository(Endereco, connection=connection)
-                try:
-                    itens_removed = await repository.delete_from_uuid(
-                        uuid=uuid
-                    )
-                except Exception as error:
-                    raise HTTPException(status_code=500, detail=str(error))
+            repository = Repository(Endereco, connection=connection)
+            try:
+                itens_removed = await repository.delete_from_uuid(
+                    uuid=uuid
+                )
+            except Exception as error:
+                raise HTTPException(status_code=500, detail=str(error))
         """
         self.lock = Lock()
         self.model = model
@@ -48,7 +48,6 @@ class Repository:
             values = list(kwargs.values())
             where_clause = " AND ".join([f"{c} = %s" for c in columns])
             query = f"SELECT * FROM {self.tablename} WHERE {where_clause};"
-            logging.debug(f"\nQuery: {query} Values: {values}")
 
         else:
             query = f"SELECT * FROM {self.tablename}"
@@ -57,6 +56,12 @@ class Repository:
             cursor = await self.connection.cursor()
             await cursor.execute(query, values)
             result = await cursor.fetchone()
+
+        logging.debug(
+            ConsoleColors.okblue(
+                f"\n\nQuery: {query} Values: {values}\n\n"
+            )
+        )
 
         if result:
             column_names = []
@@ -90,7 +95,6 @@ class Repository:
             query = "SELECT * FROM {} WHERE {};".format(
                 self.tablename, where_clause
             )
-            logging.debug(f"\nQuery: {query} Values: {values}")
         else:
             query = f"SELECT * FROM {self.tablename}"
 
@@ -98,6 +102,12 @@ class Repository:
             cursor = await self.connection.cursor()
             await cursor.execute(query, values)
             results = await cursor.fetchall()
+
+        logging.debug(
+            ConsoleColors.okblue(
+                f"\n\nQuery: {query} Values: {values}\n\n"
+            )
+        )
 
         column_names = []
         if cursor.description is not None:
@@ -138,6 +148,12 @@ class Repository:
             await cursor.execute(query, [f"%{value}%" for value in values])
             results = await cursor.fetchall()
 
+        logging.debug(
+            ConsoleColors.okblue(
+                f"\n\nQuery: {query} Values: {values}\n\n"
+            )
+        )
+
         column_names = []
         if cursor.description is not None:
             for item in cursor.description:
@@ -175,12 +191,17 @@ class Repository:
             self.tablename, column_clause, value_placeholder
         )
 
-        logging.info(f"\nCommand: {command} Values: {values}")
         async with self.lock:
             cursor = await self.connection.cursor()
             await cursor.execute(command, values)
 
         cursor.close()
+
+        logging.debug(
+            ConsoleColors.okgreen(
+                f"\n\nCommand: {command} Values: {values}\n\n"
+            )
+        )
         return kwargs["uuid"]
 
     async def update(self, item: Any, data: dict = {}) -> int:
@@ -197,19 +218,23 @@ class Repository:
             int: The number of rows affected by the update operation.
         """
         values = list(data.values())
-        print({'data': data})
+
         set_clause = ", ".join([f"{column} = %s" for column in data.keys()])
-        query = "UPDATE {} SET {} WHERE uuid = '{}';".format(
+        command = "UPDATE {} SET {} WHERE uuid = '{}';".format(
             self.tablename, set_clause, item.uuid
         )
-        logging.info(f"\n\n\nCommand: {query} Values: {values}\n\n")
         async with self.lock:
             cursor = await self.connection.cursor()
-            await cursor.execute(query, values)
+            await cursor.execute(command, values)
 
         num_rows_affected = cursor.rowcount
 
         cursor.close()
+        logging.debug(
+            ConsoleColors.okgreen(
+                f"\n\nCommand: {command} Values: {values}\n\n"
+            )
+        )
         return num_rows_affected
 
     async def delete(self, item: Any) -> int:
@@ -223,16 +248,20 @@ class Repository:
             int: The number of rows affected by the delete operation.
         """
         uuid = item.uuid
-        query = f"DELETE FROM {self.tablename} WHERE uuid = %s;"
-        logging.info(f"Query: {query} uuid = {uuid}\n")
+        command = f"DELETE FROM {self.tablename} WHERE uuid = %s;"
 
         async with self.lock:
             cursor = await self.connection.cursor()
-            await cursor.execute(query, (uuid,))
+            await cursor.execute(command, (uuid,))
 
         num_rows_affected = cursor.rowcount
 
         cursor.close()
+        logging.debug(
+            ConsoleColors.fail(
+                f"\n\nCommand: {command} uuid = {uuid}\n\n"
+            )
+        )
         return num_rows_affected
 
     async def delete_from_uuid(self, uuid) -> int:
@@ -244,21 +273,29 @@ class Repository:
         Returns:
             int: The number of rows affected by the delete operation.
         """
-        query = f"DELETE FROM {self.tablename} WHERE uuid = %s;"
-        logging.info(f"Query: {query} uuid = {uuid}\n")
+        command = f"DELETE FROM {self.tablename} WHERE uuid = %s;"
 
         async with self.lock:
             cursor = await self.connection.cursor()
-            await cursor.execute(query, (uuid,))
+            await cursor.execute(command, (uuid,))
 
         num_rows_affected = cursor.rowcount
 
         cursor.close()
+        logging.debug(
+            ConsoleColors.fail(
+                f"\n\nCommand: {command} uuid = {uuid}\n\n"
+            )
+        )
         return num_rows_affected
 
     async def execute_and_fetch_one(self, query: str, params: tuple):
         """ """
-        logging.info(f"Query: {query}")
+        logging.debug(
+            ConsoleColors.okblue(
+                f"\n\nCommand: {query}\n\n"
+            )
+        )
 
         async with self.lock:
             cursor = await self.connection.cursor()
@@ -286,7 +323,11 @@ class Repository:
 
     async def execute_and_fetch_all(self, query: str, params: tuple):
         """ """
-        logging.info(f"Query: {query}")
+        logging.debug(
+            ConsoleColors.okblue(
+                f"Query: {query}"
+            )
+        )
 
         async with self.lock:
             cursor = await self.connection.cursor()

@@ -1,3 +1,4 @@
+export { User } from './user';
 export { AuthHeaders } from './authHeaders';
 export { FileDataRequest } from './file';
 export { UploadImageDataResponse } from './image';

@@ -1,0 +1,83 @@
+
+<h2>Pedidos</h2>
+<hr>
+
+@if (!loading) {
+
+  @for (pedido of pedidos.value; track $index) {
+
+    @if (!pedido.concluido) {
+
+        <p>
+          <a [routerLink]="">
+            <strong>ID: {{pedido.uuid}}</strong>
+          </a>
+        </p>
+        <div>Total: {{ pedido.total | currency:'BRL' }}</div>
+
+        @if (statusList.length) {
+
+          <select [(ngModel)]="pedido.status_uuid">
+            <option [value]="null">Pedido Realizado</option>
+          @for (s of statusList; track $index) {
+            <option value="{{ s.uuid }}">{{s.nome}}</option>
+          }
+          </select>
+        }
+
+
+        @if (pedido.status) {
+          <p>Status: {{pedido.status.nome}}</p>
+        } @else {
+          <p>Status: Pedido Realizado</p>
+        }
+
+        Comentarios: {{ pedido.comentarios }}
+
+
+        <p>Celular:
+          <a href="http://wa.me/55{{pedido.celular}}">{{pedido.celular}}</a>
+        </p>
+        <p>Data e Hora: {{pedido.data_hora}}</p>
+        <h3>Endereço:</h3>
+        <ul>
+            <li>Bairro: {{pedido.endereco.bairro}}</li>
+            <li>CEP: {{pedido.endereco.cep}}</li>
+            <li>Cidade: {{pedido.endereco.cidade}}</li>
+            <li>UF: {{pedido.endereco.uf}}</li>
+            <li>Logradouro: {{pedido.endereco.logradouro}}</li>
+            <li>Numero: {{pedido.endereco.numero}}</li>
+            <li>Complemento: {{pedido.endereco.complemento}}</li>
+        </ul>
+
+        <p>
+          Frete: R$
+          <input
+          type="number"
+          min="0"
+          [value]="pedido.frete">
+        </p>
+
+        <h3>Itens do Pedido:</h3>
+        <div style="border: 1px solid black;">
+          <ul>
+          @for (item of pedido.itens; track $index) {
+            <li>Produto: {{item.produto_nome}}</li>
+            <li>Preço: {{ item.valor | currency:"BRL" }}</li>
+            <li>Subtotal: {{item.valor * item.quantidade | currency:"BRL" }}</li>
+            <li>Quantidade: {{item.quantidade}}</li>
+            <li>Comentarios: {{ item.observacoes }}</li>
+            <hr>
+          }
+          </ul>
+        </div>
+    }
+  }
+
+  @if (nenhumEmAndamento.value) {
+    Vazio!
+  }
+
+} @else {
+  <spinner />
+}

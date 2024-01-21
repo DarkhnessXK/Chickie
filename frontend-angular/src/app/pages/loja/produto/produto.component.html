@@ -23,13 +23,17 @@
 
 <div>
 
-    @if (fileData.bytes_base64 || produto.value?.image_url) {
-      imagem
-      <img
-      [src]="fileData.bytes_base64 || produto.value?.image_url"
-      alt="Imagem selecionada" width="350px">
-    } @else {
-      <strong>Nenhuma imagem disponível!</strong>
+    @if (!imageLoading) {
+
+      @if (fileData.bytes_base64 || produto.value?.image_url) {
+        imagem
+        <img
+        [src]="fileData.bytes_base64 || produto.value?.image_url"
+        alt="Imagem selecionada" width="350px">
+      } @else {
+        <span>Nenhuma imagem disponível.</span>
+      }
+
     }
 
     <form [formGroup]="imageForm">
@@ -132,6 +136,6 @@
 
   </div>
 } @else {
-  <strong>Loading ...</strong>
+  <spinner />
 }
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { NavbarComponent } from '../components/navbar/navbar.component';
 import { AuthService } from '../services/auth.service';
 
@@ -8,7 +8,12 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, NavbarComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterModule,
+    NavbarComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.sass'
 })

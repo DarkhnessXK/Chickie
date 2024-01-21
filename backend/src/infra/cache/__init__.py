@@ -1,6 +1,6 @@
 import aioredis
 from typing import TypeVar, Any, Optional
-from config import settings as s
+from config import settings as s  # noqa  # type: ignore
 import json
 
 
@@ -61,16 +61,19 @@ class RedisService:
             value_dumped
         )
 
-    async def store_json(self, key, data: dict) -> None:
+    async def store_dict(self, key, data: dict) -> None:
         print("Armazenando dicionario ao redis")
         json_data = json.dumps(data)
         await self.set(key, json_data)
 
-    async def get_json(self, key) -> dict:
+    async def get_dict(self, key) -> Optional[dict]:
         print("Armazenando dicionario ao redis")
         value = await self.get(key)
-        json_data = json.loads(value.decode('utf-8'))
-        return json_data
+        try:
+            json_data = json.loads(value.decode('utf-8'))
+            return json_data
+        except Exception:
+            return None
 
     # async def dict(self) -> dict:
     #     if self.redis_db is None:

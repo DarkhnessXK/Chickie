@@ -1,0 +1,189 @@
+
+<h3>Pedido</h3>
+
+<div>
+  Clientes
+  <select
+    name="clientes"
+    id="select-clientes"
+    [(ngModel)]="userUUID"
+    (change)="selectCliente()">
+
+    <option [value]="null">Escolha um cliente</option>
+    @for (cliente of clientes.value; track $index) {
+      <option [value]="cliente.uuid">{{ cliente.nome }}</option>
+    }
+  </select>
+</div>
+
+<div>
+  Celular
+  <input type="text" [(ngModel)]="celular" mask="(00) 00000-0000" />
+</div>
+
+<div>
+  <h3>Endereco</h3>
+
+  <div>
+    <div>
+      <label for="uf">UF:</label>
+      <input
+        [(ngModel)]="endereco.uf"
+        type="text"
+        id="uf"
+        name="uf" />
+    </div>
+    <div>
+      <label for="cidade">Cidade:</label>
+      <input
+        [(ngModel)]="endereco.cidade"
+        type="text"
+        id="cidade"
+        name="cidade" />
+    </div>
+    <div>
+      <label for="logradouro">Rua:</label>
+      <input
+        [(ngModel)]="endereco.logradouro"
+        type="text"
+        id="logradouro"
+        name="logradouro" />
+    </div>
+    <div>
+      <label for="numero">Número:</label>
+      <input
+        [(ngModel)]="endereco.numero"
+        type="text"
+        id="numero"
+        name="numero" />
+    </div>
+    <div>
+      <label for="bairro">Bairro:</label>
+      <input
+        [(ngModel)]="endereco.bairro"
+        type="text"
+        id="bairro"
+        name="bairro" />
+    </div>
+    <div>
+      <label for="cep">CEP:</label>
+      <input
+        [(ngModel)]="endereco.cep"
+        type="text"
+        id="cep"
+        name="cep" />
+    </div>
+    <div>
+      <label for="complemento">Complemento:</label>
+      <input
+        [(ngModel)]="endereco.complemento"
+        type="text"
+        id="complemento"
+        name="complemento" />
+    </div>
+
+  </div>
+</div>
+
+<h3>Itens</h3>
+
+<div>
+  Preço Total:
+  {{ getPrecoTotal() | currency:'BRL':'symbol':'1.2-2' }}
+
+</div>
+
+@for (item of numeroDeItens.value; track $index) {
+
+  <div style="margin: 25px;">
+    <label for="">Produtos</label>
+    <select
+      [(ngModel)]="item.produto_uuid"
+    >
+
+      <option value="">Escolha um produto</option>
+      @for (produto of companyProducts.value; track $index) {
+        <option value="{{ produto.uuid }}">
+          {{ produto.nome }}
+        </option>
+      }
+    </select>
+    <div>
+      <label for="">Quantidade</label>
+      <input type="number" [(ngModel)]="item.quantidade" min="1">
+    </div>
+
+    <div>
+      <label for="">Observacoes</label>
+      <textarea
+        name="" id=""
+        cols="30" rows="3"
+        [(ngModel)]="item.observacoes"></textarea>
+
+    </div>
+    <div>
+      @if (item.produto_uuid) {
+        <div>
+          Preço unitário:
+
+          {{
+            getProdutoPreco(item.produto_uuid) |
+            currency:'BRL':'symbol':'1.2-2'
+          }}
+
+          Preço total:
+
+          {{
+            (getProdutoPreco(item.produto_uuid) * item.quantidade) |
+            currency:'BRL':'symbol':'1.2-2'
+          }}
+        </div>
+
+        @if (
+          getProdutoPreco(item.produto_uuid) !=
+          getProdutoPrecoBase(item.produto_uuid)
+        ) {
+          <strong>
+            Em promoção!
+            De
+
+            {{
+              getProdutoPrecoBase(item.produto_uuid) |
+              currency:'BRL':'symbol':'1.2-2'
+            }}
+
+            Por
+
+            {{
+              getProdutoPreco(item.produto_uuid) |
+              currency:'BRL':'symbol':'1.2-2'
+            }}
+            cada um
+          </strong>
+        }
+      }
+    </div>
+    @if (numeroDeItens.value.length > 1) {
+      <div>
+        <button (click)="removeItem(item)">Remover Item</button>
+      </div>
+    }
+  </div>
+
+}
+
+<div>
+  <button (click)="addItem()">Adicionar Item</button>
+</div>
+
+<hr />
+
+<label for="">Comentarios</label>
+<textarea name="" id="" cols="30" rows="10" [(ngModel)]="comentarios">
+</textarea>
+
+<hr />
+
+<div>
+  <button (click)="cadastrarPedido($event)">Concluir Pedido</button>
+</div>

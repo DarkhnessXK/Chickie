@@ -1,46 +1,40 @@
-from .connection_dependency import connection_dependency
 from typing import Annotated
+from src.domain.services import LojaService, ProdutoService, PedidoService
+from src.api.security import AuthService
 from fastapi import Depends
-from src.services import (
-    ProdutoService,
-    PedidoService,
-    AvaliacaoDeLojaService,
-    LojaService
-)
 
 
-async def get_produto_service(connection: connection_dependency):
-    return ProdutoService(connection=connection)
+from .connection_dependency import ConnectionDependency  # noqa
 
 
-async def get_loja_service(connection: connection_dependency):
-    return LojaService(connection=connection)
+def get_auth_service(connection: ConnectionDependency):
+    return AuthService(connection)
 
 
-async def get_pedido_service(connection: connection_dependency):
-    return PedidoService(connection=connection)
+def get_loja_service(connection: ConnectionDependency):
+    return LojaService(connection)
 
 
-async def get_avaliacao_de_loja_service(connection: connection_dependency):
-    return AvaliacaoDeLojaService(connection=connection)
+def get_produto_service(connection: ConnectionDependency):
+    return ProdutoService(connection)
 
 
-avaliacao_de_loja_service_dependency = Annotated[
-    AvaliacaoDeLojaService,
-    Depends(get_avaliacao_de_loja_service)
+def get_pedido_service(connection: ConnectionDependency):
+    return PedidoService(connection)
+
+
+AuthServiceDependency = Annotated[
+    AuthService, Depends(get_auth_service)
 ]
 
-produto_service_dependency = Annotated[
-    ProdutoService,
-    Depends(get_produto_service)
+PedidoServiceDependency = Annotated[
+    PedidoService, Depends(get_pedido_service)
 ]
 
-loja_service_dependency = Annotated[
-    LojaService,
-    Depends(get_loja_service)
+ProdutoServiceDependency = Annotated[
+    ProdutoService, Depends(get_produto_service)
 ]
 
-pedido_service_dependency = Annotated[
-    PedidoService,
-    Depends(get_pedido_service)
+LojaServiceDependency = Annotated[
+    LojaService, Depends(get_loja_service)
 ]

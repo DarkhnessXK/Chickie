@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { AuthService, CompanyAuthData } from '../../../services/services';
 import { BehaviorSubject } from 'rxjs';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [SpinnerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.sass'
 })
@@ -19,7 +21,6 @@ export class LojaHomeComponent {
     if (this.companyData.value) {
       this.imageBase64String = this.companyData.value.loja.imagem_cadastro
     }
-
   }
 
 

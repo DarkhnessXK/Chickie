@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { FormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { ButtonHandler } from '../../../handlers/button';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 
 import {  ProdutoResponse, Response201ImageCreatedWrapper,
           FileDataRequest } from '../../../models/models';
@@ -15,7 +16,7 @@ import {  AuthService, CompanyAuthData, ProdutoService,
 @Component({
   selector: 'app-categoria',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, SpinnerComponent],
   templateUrl: './categoria.component.html',
   styleUrl: './categoria.component.sass'
 })
@@ -62,10 +63,11 @@ export class CategoriaComponent {
       this.companyData.loja.uuid,
       this.categoriaUUID
     ).subscribe({
-      next: (response) => {
+      next: (response: any) => {
+        let payload = response.payload
         this.loading = false
-        if (Array.isArray(response)) {
-          this.companyProducts.next(response);
+        if (Array.isArray(payload)) {
+          this.companyProducts.next(payload);
         }
       },
       error: (response) => {

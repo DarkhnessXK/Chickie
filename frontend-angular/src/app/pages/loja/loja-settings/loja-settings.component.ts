@@ -3,18 +3,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UploadImageDataResponse, FileDataRequest } from '../../../models/models';
 import { BehaviorSubject } from 'rxjs';
 import { NgxMaskDirective } from 'ngx-mask';
+import { ButtonHandler } from '../../../handlers/button';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 
 import {  FormGroup, FormBuilder,
           ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import {  LojaService, AuthService,
           CompanyAuthData, ImageService, ViaCepService } from '../../../services/services';
-import { ButtonHandler } from '../../../handlers/button';
 
 @Component({
   selector: 'app-loja-settings',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, NgxMaskDirective],
+  imports: [ReactiveFormsModule, FormsModule, NgxMaskDirective, SpinnerComponent],
   templateUrl: './loja-settings.component.html',
   styleUrl: './loja-settings.component.sass'
 })

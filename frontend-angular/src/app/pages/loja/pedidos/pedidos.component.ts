@@ -5,17 +5,26 @@ import { FormsModule } from '@angular/forms';
 import { Pedido, StatusResponse } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
+import { ButtonHandler } from '../../../handlers/button';
+import { FormatDatePipe } from '../../../pipes/format-date.pipe';
+
 import {  CompanyAuthData, AuthService, PedidoService,
           ProdutoService, StatusService } from '../../../services/services';
-import { ButtonHandler } from '../../../handlers/button';
 
 
 @Component({
   selector: 'app-pedido',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './pedidos.component.html',
-  styleUrl: './pedidos.component.sass'
+  styleUrl: './pedidos.component.sass',
+  imports: [
+    FormatDatePipe,
+    FormsModule,
+    CommonModule,
+    RouterModule,
+    SpinnerComponent
+  ]
 })
 export class PedidosComponent {
 
@@ -24,6 +33,7 @@ export class PedidosComponent {
   companyData: CompanyAuthData | null
   statusList: Array<StatusResponse>
   nenhumEmAndamento: BehaviorSubject<Boolean>
+  loading: boolean
 
   constructor(
     private pedidoService: PedidoService,
@@ -32,6 +42,7 @@ export class PedidosComponent {
     private route: ActivatedRoute,
     private statusService: StatusService
   ) {
+    this.loading = false
     this.nenhumEmAndamento = new BehaviorSubject<Boolean>(false)
     this.pedidos = new BehaviorSubject<Array<Pedido>>([])
     this.statusList = []
@@ -40,6 +51,7 @@ export class PedidosComponent {
   }
 
   ngOnInit() {
+    this.loading = true
     this.route.params.subscribe(params => {
 
       if (!this.companyData) {
@@ -48,28 +60,27 @@ export class PedidosComponent {
       }
 
       this.statusService.getAll(this.companyData.loja.uuid).subscribe({
-        next: (response) => {
-          if (Array.isArray(response)) {
-            this.statusList.push(...response)
-          }
+        next: (result: any) => {
+          let payload = result.payload
+          this.loading = false
+          this.statusList.push(...payload)
         },
-        error: (response) => {
+        error: (result) => {
           throw new Error('Erro na requisição dos dados')
         }
       })
 
       this.pedidoService.getAll(this.companyData.loja.uuid).subscribe({
-        next: (response: any) => {
-          this.pedidos.next(response)
-          console.log({response: response})
-          this.pedidos.next(response)
+        next: (result: any) => {
+          let payload = result.payload
+          this.pedidos.next(payload)
           this.nenhumEmAndamento.next(
             this.pedidos.value.filter(item => !item.concluido).length == 0
           )
         },
-        error: (response) => {
+        error: (result) => {
           let msg = 'Erro na busca do pedido'
-          alert(msg); console.log(response); throw new Error(msg)
+          alert(msg); console.log(result); throw new Error(msg)
         }
       })
     })
@@ -94,23 +105,24 @@ export class PedidosComponent {
     })
   }
 
-  formatarData(dataISO: string) {
-    const data = new Date(dataISO);
+  atualizarStatusDePedido(pedido: Pedido) {
 
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
+    if (!pedido.status_uuid) {
+      let msg = 'Erro ao alterar o status'
+      alert(msg); throw new Error(msg)
+    }
 
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
-    const segundos = String(data.getSeconds()).padStart(2, '0');
+    this.pedidoService.alterarStatusDePedido(
+      pedido.uuid, pedido.status_uuid
+    ).subscribe({
+      next: (result) => {
+        alert('Status alterado com sucesso!')
+      },
+      error: (result) => {
+        alert('Erro ao alterar o status')
+      }
+    })
 
-    return `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`;
-  }
-
-  atualizarStatusDePedido(pedido: any) {
-    console.log(pedido)
-    alert('Status Atualizado com sucesso!')
   }
 
   atualizarFreteDePedido(pedido: any) {

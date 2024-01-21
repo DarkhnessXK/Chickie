@@ -1,1 +1,0 @@
-from .interfaces import CommandInterface  # noqa

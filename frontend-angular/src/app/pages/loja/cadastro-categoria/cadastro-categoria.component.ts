@@ -4,15 +4,17 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { ButtonHandler } from '../../../handlers/button';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
+
 import {  CompanyAuthData, AuthService,
           CategoriaService } from '../../../services/services';
-import { ButtonHandler } from '../../../handlers/button';
 
 
 @Component({
   selector: 'app-cadastro-categoria',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, SpinnerComponent],
   templateUrl: './cadastro-categoria.component.html',
   styleUrl: './cadastro-categoria.component.sass'
 })
@@ -36,14 +38,15 @@ export class CadastroCategoriaComponent {
     this.loading = true
     if (this.companyData) {
       this.service.getAll(this.companyData.loja.uuid).subscribe({
-        next: (response: Object) => {
+        next: (result: any) => {
           this.loading = false
-          if (Array.isArray(response)) {
-            this.categorias.next(response)
+          let payload = result.payload
+          if (Array.isArray(payload)) {
+            this.categorias.next(payload)
           }
         },
-        error: (response: Object) => {
-          throw new Error(JSON.stringify(response))
+        error: (result: Object) => {
+          throw new Error(JSON.stringify(result))
         }
       })
     }

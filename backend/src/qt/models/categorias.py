@@ -1,6 +1,6 @@
 import httpx
 import json
-from src.models import CategoriaProdutos as CP
+from src.domain.models import CategoriaProdutos as CP
 from contextlib import suppress
 
 

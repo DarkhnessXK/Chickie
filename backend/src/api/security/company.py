@@ -1,11 +1,10 @@
-from typing import Annotated, Optional
-from fastapi import Depends, HTTPException, status
+from typing import Optional
+from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from config import settings as s
 from src.infra.database_postgres.repository import Repository
-from src.infra.database_postgres.manager import DatabaseConnectionManager
-from src.models import Loja
-from src.api.security.scheme import oauth2_scheme
+from src.domain.models import Loja
+from src.domain.services import LojaService
 
 
 async def authenticate_company(
@@ -23,13 +22,15 @@ async def authenticate_company(
         None se a autenticação falhar.
     """
 
-    def only_numbers(string: str | None) -> str | None:
+    def only_numbers(string: Optional[str]) -> Optional[str]:
         if string is None:
             return None
 
         return ''.join([n for n in string if n.isdecimal()])
 
+    from src.infra.database_postgres.manager import DatabaseConnectionManager
     async with DatabaseConnectionManager() as connection:
+        service = LojaService(connection)
         loja_repo = Repository(Loja, connection=connection)
         l1 = await loja_repo.find_one(username=username)
         l2 = await loja_repo.find_one(email=username)
@@ -40,14 +41,14 @@ async def authenticate_company(
         if loja is None or not isinstance(loja, Loja):
             return None
 
-        if not loja.authenticate(password):
+        if not service.authenticate(loja=loja, senha_loja=password):
             return None
 
         return loja
 
 
 async def current_company(
-    token: Annotated[str, Depends(oauth2_scheme)]
+    token: str
 ) -> Loja:
     """
     Obtém o objeto da loja atualmente autenticada.

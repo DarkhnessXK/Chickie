@@ -5,6 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { Pedido, StatusResponse } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
+import { FormatDatePipe } from '../../../pipes/format-date.pipe';
+import { CurrencyPipe } from '@angular/common';
+
 import {  CompanyAuthData, AuthService, PedidoService,
           ProdutoService, StatusService } from '../../../services/services';
 
@@ -12,17 +16,26 @@ import {  CompanyAuthData, AuthService, PedidoService,
 @Component({
   selector: 'app-pedido',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    RouterModule,
+    SpinnerComponent,
+    FormatDatePipe,
+    CurrencyPipe
+  ],
   templateUrl: './historico.component.html',
   styleUrl: './historico.component.sass'
 })
 export class HistoricoComponent {
 
+  total: number = 0
   pedidoUUID: string
   pedidos: BehaviorSubject<Array<Pedido>>
   companyData: CompanyAuthData | null
   statusList: Array<StatusResponse>
   nenhumEmAndamento: BehaviorSubject<Boolean>
+  loading: boolean
 
   constructor(
     private pedidoService: PedidoService,
@@ -31,6 +44,7 @@ export class HistoricoComponent {
     private route: ActivatedRoute,
     private statusService: StatusService
   ) {
+    this.loading = false
     this.nenhumEmAndamento = new BehaviorSubject<Boolean>(false)
     this.pedidos = new BehaviorSubject<Array<Pedido>>([])
     this.statusList = []
@@ -39,52 +53,44 @@ export class HistoricoComponent {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.loading = true
 
-      if (!this.companyData) {
-        let msg = "Dados de empresa não encontrados"
-        alert(msg); throw new Error(msg)
+    if (!this.companyData) {
+      let msg = "Dados de empresa não encontrados"
+      alert(msg); throw new Error(msg)
+    }
+
+    this.statusService.getAll(this.companyData.loja.uuid).subscribe({
+      next: (result: any) => {
+        this.loading = false
+        this.statusList.push(...result)
+      },
+      error: (result) => {
+        throw new Error('Erro na requisição dos dados')
       }
-
-      this.statusService.getAll(this.companyData.loja.uuid).subscribe({
-        next: (response) => {
-          if (Array.isArray(response)) {
-            this.statusList.push(...response)
-          }
-        },
-        error: (response) => {
-          throw new Error('Erro na requisição dos dados')
-        }
-      })
-
-      this.pedidoService.getAll(this.companyData.loja.uuid).subscribe({
-        next: (response: any) => {
-          this.pedidos.next(response)
-          this.nenhumEmAndamento.next(
-            this.pedidos.value.filter(item => item.concluido).length == 0
-          )
-          console.log({response: response})
-        },
-        error: (response) => {
-          let msg = 'Erro na busca do pedido'
-          alert(msg); console.log(response); throw new Error(msg)
-        }
-      })
     })
-  }
 
-  formatarData(dataISO: string) {
-    const data = new Date(dataISO);
+    this.pedidoService.getAll(this.companyData.loja.uuid).subscribe({
+      next: (result: any) => {
+        let payload = result.payload
+        this.pedidos.next(payload)
+        this.nenhumEmAndamento.next(
+          this.pedidos.value.filter(item => item.concluido).length == 0
+        )
 
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
+          for (let pedido of payload) {
+            for (let item of pedido.itens) {
+              this.total += (item.quantidade * item.valor)
+            }
+          }
 
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
-    const segundos = String(data.getSeconds()).padStart(2, '0');
+      },
+      error: (result) => {
+        let msg = 'Erro na busca do pedido'
+        alert(msg); console.log(result); throw new Error(msg)
+      }
+    })
 
-    return `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`;
   }
 
 }

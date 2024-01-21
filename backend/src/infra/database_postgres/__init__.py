@@ -4,4 +4,4 @@ PostgreSQL, configurar sua classe de repositório e todas as dependencias
 e modulos relacionados
 """
 
-from . import config, session, entities#, bus  # noqa
+from . import config, session, entities  # noqa

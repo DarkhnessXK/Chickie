@@ -1,14 +1,20 @@
-@if (companyProducts.value.length) {
-  <h2>Produtos</h2>
-  @for (produto of companyProducts.value; track $index) {
-    <div>
-      Nome:
-      <a [routerLink]="['/loja/produtos', produto.uuid]">
-        {{ produto.nome }}</a> ,
+@if (!loading) {
+
+  @if (companyProducts.value.length) {
+    <h2>Produtos</h2>
+    @for (produto of companyProducts.value; track $index) {
+      <div>
+        Nome:
+        <a [routerLink]="['/loja/produtos', produto.uuid]">
+          {{ produto.nome }}</a> ,
+        <br />
+        Descrição: {{ produto.descricao }}</div>
+        Categoria: {{ produto.categoria?.nome }}
       <br />
-      Descrição: {{ produto.descricao }}</div>
-      Categoria: {{ produto.categoria?.nome }}
-    <br />
-    <br />
+      <br />
+    }
   }
+
+} @else {
+  <spinner />
 }

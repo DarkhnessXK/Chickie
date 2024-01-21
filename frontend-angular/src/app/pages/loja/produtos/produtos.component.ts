@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 
 import {  ProdutoResponse, CategoriaResponse,
           Response201ImageCreatedWrapper} from '../../../models/models';
@@ -14,7 +15,7 @@ import {  CompanyAuthData, AuthService,
 @Component({
   selector: 'app-cadastro-produto',
   standalone: true,
-  imports: [FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule, SpinnerComponent],
   templateUrl: './produtos.component.html',
   styleUrl: './produtos.component.sass'
 })
@@ -24,6 +25,7 @@ export class ProdutosComponent {
   descricaoValue: string
   precoValue: number | null
   categoriaValue: any
+  loading: boolean
 
   companyProducts: BehaviorSubject<Array<ProdutoResponse>>
   companyCategorias: BehaviorSubject<Array<CategoriaResponse>>
@@ -34,8 +36,8 @@ export class ProdutosComponent {
     private produtoService: ProdutoService,
     private authService: AuthService,
     private categoriaService: CategoriaService,
-    private route: ActivatedRoute,
   ) {
+    this.loading = false
     this.companyCategorias = new BehaviorSubject<Array<CategoriaResponse>>([])
     this.companyProducts = new BehaviorSubject<Array<ProdutoResponse>>([])
     this.companyData = this.authService.currentCompany()
@@ -48,21 +50,17 @@ export class ProdutosComponent {
   }
 
   fetchProducts() {
+    this.loading = true
     if (!this.companyData) {
-      this.route.params.subscribe(params => {
-        this.companyUUID = params['lojaID'];
-        this.fetchProducts()
-      })
       let msg =' Dados da empresa não encontrados!'
       alert(msg); throw new Error(msg)
     }
 
     this.produtoService.getAll(this.companyData.loja.uuid).subscribe({
-      next: (response) => {
-        if (Array.isArray(response)) {
-          this.companyProducts.next(response)
-          this.fetchCategoriasForProducts()
-        }
+      next: (response: any) => {
+        let payload = response.payload
+        this.companyProducts.next(payload)
+        this.fetchCategoriasForProducts()
       },
       error: (response) => {
         let msg = 'Erro ao buscar pelos produtos'
@@ -89,20 +87,17 @@ export class ProdutosComponent {
         }
       })
     }
-
+    this.loading = false
   }
 
   fetchCategorias() {
-
     if (!this.companyData) {
       alert('Dados da empresa não encontrados!')
       throw new Error('Dados da empresa não encontrados!')
     }
     this.categoriaService.getAll(this.companyData.loja.uuid).subscribe({
-      next: (response) => {
-        if (Array.isArray(response)) {
-          this.companyCategorias.next(response)
-        }
+      next: (response: any) => {
+        this.companyCategorias.next(response)
       },
       error: (response) => {
         let msg = '101: Dados de categorias não encontrados!'

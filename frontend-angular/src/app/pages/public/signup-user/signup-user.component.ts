@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService, SignupService, ViaCepService } from '../../../services/services';
 import { Response201Wrapper } from '../../../models/models';
 import { NgxMaskDirective } from 'ngx-mask';
+import { ButtonHandler } from '../../../handlers/button';
 
 @Component({
   selector: 'app-signup-user',
@@ -69,7 +70,10 @@ export class SignupUserComponent {
     }
   }
 
-  doSignUp() {
+  doSignUp(event: Event) {
+    let button = new ButtonHandler(event)
+    button.disable('Cadastrando...')
+
     if (this.passwordValue != this.password2Value) {
       alert('A senha e a confirmação não são iguais')
       return
@@ -98,14 +102,18 @@ export class SignupUserComponent {
 
     this.service.doUserSignUp(body).subscribe({
       next: (response) => {
+        button.enable()
         let r = new Response201Wrapper(response)
         alert("Cadastro realizado com sucesso!")
         this.authService.doUserLogin(this.usernameValue, this.passwordValue)
       },
       error: (response) => {
+        button.enable()
         let msg = "Erro no processamento dos dados!"
         alert(msg); throw new Error(msg)
       }
     })
   }
+
+
 }

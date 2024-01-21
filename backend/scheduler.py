@@ -1,5 +1,5 @@
 from src.scheduler import celerybeat_scheduler
-from celery import Celery
+from celery import Celery  # type: ignore
 
 app = Celery(
     "myapp",

@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileDataRequest } from '../models/models';
 import { environment } from '../../environments/environment';
+import { UserSignUpRequest } from './signup.service';
+import { CompanyAuthData } from './auth.service';
 
 
 
@@ -11,9 +13,7 @@ export class LojaService {
 
   baseUrl: string
 
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor(private http: HttpClient) {
     this.baseUrl = `${environment.host}/loja`
   }
 
@@ -23,7 +23,7 @@ export class LojaService {
   }
 
   getAll():Observable<Object> {
-    let observable = this.http.get(this.baseUrl)
+    let observable = this.http.get(`${this.baseUrl}/`)
     return observable
   }
 
@@ -49,6 +49,16 @@ export class LojaService {
     return observable
   }
 
+  getAllCostumers(companyData: any) {
+    let observable = this.http.get(
+      this.baseUrl.concat(`/clientes/`), {
+        headers: { Authorization: `Bearer ${companyData?.access_token}`
+      }
+    })
+
+    return observable
+  }
+
   atualizarCadastro(body: any, companyData: any) {
 
     if (!companyData) {
@@ -63,5 +73,17 @@ export class LojaService {
     })
 
     return observable
+  }
+
+  cadastrarUser(
+    companyUUID: string,
+    body: UserSignUpRequest,
+    authData: CompanyAuthData
+  ) {
+    let path = `/cliente_v2/${companyUUID}`
+    let obs = this.http.post(this.baseUrl.concat(path), body, { headers: {
+      Authorization: `Bearer ${authData.access_token}`
+    } })
+    return obs
   }
 }

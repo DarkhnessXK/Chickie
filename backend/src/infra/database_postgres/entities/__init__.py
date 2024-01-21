@@ -7,6 +7,7 @@ from .produto import Produto  # noqa
 from .preco import Preco  # noqa
 from .status import Status  # noqa
 from .pedido import Pedido  # noqa
+from .endereco import EnderecoUsuario, EnderecoLoja, EnderecoEntrega  # noqa
 from .item_pedido import ItemPedido  # noqa
 from .entregador import Entregador  # noqa
 from .avaliacao import AvaliacaoDeLoja, AvaliacaoDeProduto  # noqa

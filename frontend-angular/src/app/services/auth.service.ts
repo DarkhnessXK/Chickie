@@ -28,6 +28,7 @@ type Loja = {
   nome: string;
   telefone: string;
   username: string;
+  frete: number;
   uuid: string;
   horarios_de_funcionamento: string | null
 }

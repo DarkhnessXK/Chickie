@@ -1,7 +1,7 @@
 from src.infra.database_postgres.entities import Base
 from sqlalchemy.schema import Column as Col, ForeignKey as FK
 from datetime import datetime
-from sqlalchemy.types import Float, String as Str, DateTime, Boolean
+from sqlalchemy.types import Float, String as Str, DateTime, Boolean, Text
 
 
 class Pedido(Base):
@@ -14,6 +14,7 @@ class Pedido(Base):
     loja_uuid = Col(Str(36), FK("lojas.uuid"), nullable=False)
     celular = Col(Str(20), nullable=False)
     usuario_uuid = Col(Str(36), FK("usuarios.uuid"), nullable=True)
+    comentarios = Col(Text)
     concluido = Col(Boolean, nullable=True, default=False)
 
     # @property

@@ -1,10 +1,13 @@
-from src.infra.database_postgres.manager import DatabaseConnectionManager
 from aiopg import Connection
 from typing import Annotated
 from fastapi import (  # noqa
-    Depends
+    Depends,
+    Request
 )
 
-connection_dependency = Annotated[
-    Connection, Depends(DatabaseConnectionManager.get_connection)
-]
+
+def get_connection(request: Request):
+    return request.state.connection
+
+
+ConnectionDependency = Annotated[Connection, Depends(get_connection)]  # noqa

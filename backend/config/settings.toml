@@ -1,8 +1,7 @@
 [default]
 CACHE_DEFAULT_TIMEOUT = 1800
-MODE = 'local'
+MODE = 'LOCAL'
 
-# "uuid": "b94ee623-1057-49dc-9ebb-fbbefd90b2f4"
 LOJA_NOME = "Loja Chickie"
 LOJA_USERNAME = "chickie"
 LOJA_TELEFONE = "2133333333"
@@ -10,26 +9,10 @@ LOJA_CELULAR = "21999999999"
 LOJA_SENHA = "123123"
 LOJA_EMAIL = "loja@chickie.com"
 
-
-# {
-
-#   "uuid": "7613fa2f-8cde-4c66-bbb3-511a63546c9b"
-#   "nome": "Antonio",
-#   "username": "antonio",
-#   "email": "antoniofernandodj@outlook.com",
-#   "telefone": "21970600352",
-#   "celular": "21970600352",
-#   "endereco_uuid": "636eb0b1-5eb0-485b-a225-633e2ab8838e",
-#   "password": "string",
-#   "loja_uuid": "string"
-  
-# }
-
+[dev]
+MODE = 'DEV'
 LOG_LEVEL = "DEBUG"
 
-[dev]
-MODE = 'dev'
-
 [prod]
-MODE = 'prod'
+MODE = 'PROD'
 LOG_LEVEL = "INFO"

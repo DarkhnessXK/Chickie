@@ -10,6 +10,7 @@ import {  SignupService, AuthService, ImageService,
           CompanyAuthData, ViaCepService  } from '../../../services/services';
 
 import { Response201Wrapper } from '../../../models/models';
+import { ButtonHandler } from '../../../handlers/button';
 
 
 @Component({
@@ -113,7 +114,11 @@ export class SignupLojaComponent {
     }
   }
 
-  doSignUp() {
+  doSignUp(event: Event) {
+    let button = new ButtonHandler(event)
+
+    button.disable('Cadastrando...')
+
     if (this.senha2Value != this.senhaValue) {
       alert('A senha e a confirmação não são iguais')
       return
@@ -148,6 +153,7 @@ export class SignupLojaComponent {
         this.authService.doCompanyLogin(this.usernameValue, this.senhaValue).subscribe({
           next: (response: Object) => {
 
+            button.enable()
             let authData = new CompanyAuthData({ response });
             this.authService.setCompanyData(authData)
             this.authService.isLoginPage.next(false);
@@ -157,12 +163,14 @@ export class SignupLojaComponent {
           },
 
           error: (response: HttpErrorResponse) => {
+            button.enable()
             this.companyLoginStart = false;
             alert(`${response.statusText}: ${response.error.detail}`)
           },
         });
       },
       error: (response) => {
+        button.enable()
         console.log(response)
         let msg = "Erro no processamento dos dados!"
         alert(msg); throw new Error(msg)

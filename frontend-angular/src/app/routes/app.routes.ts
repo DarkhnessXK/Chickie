@@ -5,7 +5,6 @@ import { lojaRoutes } from './app.loja.routes';
 import { publicRoutes } from './app.public.routes';
 
 
-
 export const routes: Routes = [
 
   ...publicRoutes,

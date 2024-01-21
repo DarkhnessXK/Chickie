@@ -1,0 +1,17 @@
+<!-- user-profile.component.html -->
+@for (cliente of clientes.value; track $index) {
+  <div>
+    <h3>{{ cliente.nome }}</h3>
+    <p><strong>Celular:</strong> {{ cliente.celular }}</p>
+    <p><strong>Email:</strong> {{ cliente.email }}</p>
+    <p><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+    <p><strong>Modo de Cadastro:</strong> {{ cliente.modo_de_cadastro }}</p>
+    <p><strong>Username:</strong> {{ cliente.username }}</p>
+
+    @if (cliente.modo_de_cadastro === 'cadastro_de_loja') {
+      <button>Remover cliente</button>
+    }
+  </div>
+
+  <hr><hr>
+}

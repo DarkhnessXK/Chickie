@@ -1,4 +1,3 @@
-<div>Sign up Empresa</div>
 <div>
   <h3>Endereço</h3>
   <div>
@@ -82,7 +81,7 @@
     </div>
 
     <div>
-      <button (click)="doSignUp()">Cadastrar</button>
+      <button (click)="doSignUp($event)">Cadastrar</button>
     </div>
 
     <form [formGroup]="imageForm">
@@ -96,6 +95,5 @@
         <img [src]="selectedImage" alt="Imagem selecionada">
       }
     </div>
-
 
 </div>

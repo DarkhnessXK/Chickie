@@ -57,15 +57,9 @@ export class PedidoService {
   }
 
   getOne(uuid: string) {
-    this.companyData = this.authService.currentCompany()
-    if (!this.companyData) {
-      let msg = 'Dados de empresa não encontrados'
-      alert(msg); throw new Error(msg)
-    }
-    let headers = { Authorization: `Bearer ${this.companyData.access_token}` }
+    let headers = { Authorization: `Bearer ${this.companyData?.access_token}` }
 
-    let observable = this.http.get(
-      `${this.baseUrl}/${uuid}`,
+    let observable = this.http.get( `${this.baseUrl}/${uuid}`,
       { headers: headers }
     )
     return observable
@@ -87,9 +81,23 @@ export class PedidoService {
     return observable
   }
 
+  getAllFromUser(userUUID: string):Observable<Object> {
+    let params = { usuario_uuid: userUUID }
+    return this.http.get(`${this.baseUrl}/`, {
+       params: params,
+    })
+  }
+
   save(body: PedidoBodyRequest) {
     let observable = this.http.post(`${this.baseUrl}/`, body)
     return observable
+  }
+
+  alterarStatusDePedido(pedidoUUID: string, statusUUID: string) {
+    let headers = { Authorization: `Bearer ${this.companyData?.access_token}` }
+    let body = { status_uuid: statusUUID }
+    let urlRequest = this.baseUrl.concat(`/alterar_status_de_pedido/${pedidoUUID}`)
+    return this.http.patch(urlRequest, body, { headers: headers })
   }
 
   concluir(uuid: string) {

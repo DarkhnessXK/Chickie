@@ -12,7 +12,7 @@
     username: {{ userData.value.username }}
   </div>
 } @else {
-  <strong>Loading...</strong>
+  <spinner />
 }
 
 <h2>Lojas</h2>
@@ -23,9 +23,21 @@
       <div>
         <div>
           <a [routerLink]="['/l/', loja.uuid]">
-              Loja: {{ loja.nome }}
+            Loja: {{ loja.nome }}
           </a>
+
         </div>
+
+        <div>
+          Follows
+          @if (loja.seguindo === true || loja.seguindo === false) {
+            <input
+              type="checkbox"
+              [(ngModel)]="loja.seguindo"
+              (click)="followLoja($event, loja)">
+          }
+          </div>
+
         <div>
           Telefone: {{ loja.telefone }}
         </div>
@@ -48,5 +60,5 @@
     }
   </div>
 } @else {
-  Carregando...
+  <spinner />
 }

@@ -4,9 +4,11 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { PrecoResponse, FileDataRequest } from '../../../models/models';
 import { CurrencyPipe } from '@angular/common';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 
 import {  AuthService, CompanyAuthData, ImageService,
           PrecoService, ProdutoService } from '../../../services/services';
+
 import { ButtonHandler } from '../../../handlers/button';
 
 
@@ -75,7 +77,13 @@ const getTitle = (dia: string) => {
 @Component({
   selector: 'app-produto',
   standalone: true,
-  imports: [FormsModule, RouterModule, CurrencyPipe, ReactiveFormsModule],
+  imports: [
+    FormsModule,
+    RouterModule,
+    CurrencyPipe,
+    ReactiveFormsModule,
+    SpinnerComponent
+  ],
   templateUrl: './produto.component.html',
   styleUrl: './produto.component.sass'
 })
@@ -98,6 +106,7 @@ export class ProdutoComponent {
   nomeValue: string
   descricaoValue: string
   precoValue: number
+  imageLoading: boolean
 
   constructor(
     private formBuilder: FormBuilder,
@@ -107,6 +116,7 @@ export class ProdutoComponent {
     private authService: AuthService,
     private imageService: ImageService
   ) {
+    this.imageLoading = false
     this.atualizandoImagem = false
     this.fileData = { bytes_base64: '', filename: '' }
     this.selectedImage = ''
@@ -213,12 +223,13 @@ export class ProdutoComponent {
   }
 
   refreshProdutoPrecos() {
-
+    this.imageLoading = true
     if (this.companyData) {
       this.produtoService.getOne(this.produtoUUID).subscribe({
-        next: (response) => {
-          console.log({response: response})
-          let produto = new Produto(response)
+        next: (result: any) => {
+          this.imageLoading = false
+          console.log({result: result})
+          let produto = new Produto(result)
           this.produto.next(produto)
 
           this.nomeValue = produto.nome
@@ -242,7 +253,7 @@ export class ProdutoComponent {
           }
           this.diasDaSemanaDisponiveis.next(newArr)
         },
-        error: (response) => {
+        error: (result) => {
           alert('Erro na busca pelo produto')
         }
       })

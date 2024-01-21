@@ -1,25 +1,13 @@
-from fastapi.security import OAuth2PasswordRequestForm
-from src.models import Loja, Usuario
-from typing import Annotated
-from src.api import security
-from fastapi import (  # noqa
-    Depends
+from fastapi.security import OAuth2PasswordRequestForm  # noqa
+from .connection_dependency import ConnectionDependency  # noqa
+from .service_dependencies import (  # noqa
+    AuthServiceDependency,  # noqa
+    PedidoServiceDependency,
+    ProdutoServiceDependency,
+    LojaServiceDependency
 )
-
-from src.dependencies.repository_dependecies import (  # noqa
-    loja_repository_dependency,
-    status_repository_dependency
+from .token_dependency import TokenDependency  # noqa
+from .oauth2_password_request_form_dependency import (  # noqa
+    Oauth2PasswordRequestFormDependency  # noqa
 )
-
-from src.dependencies.service_dependencies import (  # noqa
-    produto_service_dependency,
-    pedido_service_dependency,
-    loja_service_dependency
-)
-
-
-current_user = Annotated[Usuario, Depends(security.current_user)]
-current_company = Annotated[Loja, Depends(security.current_company)]
-oauth2_password_request_form_dependency = Annotated[
-    OAuth2PasswordRequestForm, Depends()
-]
+from .current_loja_dependency import CurrentLojaDependency

@@ -3,7 +3,7 @@ from config import settings
 import base64
 from typing import Any, Optional, Dict
 from pydantic import BaseModel
-from src.models import Loja, Produto
+from src.domain.models import Loja, Produto
 from contextlib import suppress
 
 import cloudinary.uploader  # type: ignore

@@ -13,15 +13,10 @@ export class CategoriaService {
 
   baseUrl: string
   companyData: CompanyAuthData | null
-  token: string
 
   constructor(private http: HttpClient, private authService: AuthService) {
     this.baseUrl = `${environment.host}/categorias`
     this.companyData = authService.currentCompany()
-    this.token = ''
-    if (this.companyData) {
-      this.token = this.companyData.access_token
-    }
   }
 
   getOne(uuid: string) {
@@ -39,16 +34,16 @@ export class CategoriaService {
 
   save(body: CategoriaBodyRequest) {
     let observable = this.http.post(
-      this.baseUrl, body, { headers: { Authorization: `Bearer ${this.token}` } }
+      this.baseUrl, body,
+      { headers: { Authorization: `Bearer ${this.companyData?.access_token}` } }
     )
     return observable
   }
 
   delete(item: CategoriaResponse) {
-
     let observable = this.http.delete(
       `${this.baseUrl}/${item.uuid}`,
-      { headers: { Authorization: `Bearer ${this.token}` } }
+      { headers: { Authorization: `Bearer ${this.companyData?.access_token}` } }
     )
     return observable
   }

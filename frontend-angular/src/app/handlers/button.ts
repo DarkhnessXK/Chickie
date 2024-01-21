@@ -1,6 +1,6 @@
 export class ButtonHandler {
   private element: HTMLButtonElement
-  initialText: string
+  private initialText: string
 
   constructor (event?: Event, id?: string) {
     if (event) {

@@ -1,1 +1,0 @@
-['/home/itemize/Desenvolvimento/Chickie/backend/src/config/settings.toml', '/home/itemize/Desenvolvimento/Chickie/backend/src/config/.secrets.toml']

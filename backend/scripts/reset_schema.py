@@ -1,27 +1,23 @@
 import sys
 import os
 from pathlib import Path
-import asyncio
+# import asyncio
+from aiopg import Connection
 
 parent = str(Path(os.path.dirname(__file__)).parent)
 
 sys.path.append(parent)
 
-from src.infra.database_postgres.config import (  # noqa
-    DatabaseConnectionManager
-)
 
-
-async def remover_schema(schema: str) -> None:
+async def remover_schema(schema: str, connection: Connection) -> None:
     sql = f"""
     DROP SCHEMA {schema} CASCADE;
     CREATE SCHEMA {schema};
     """
 
-    async with DatabaseConnectionManager() as connection:
-        cursor = await connection.cursor()
-        await cursor.execute(sql)
+    cursor = await connection.cursor()
+    await cursor.execute(sql)
 
-        cursor.close()
+    cursor.close()
 
-asyncio.run(remover_schema('public'))
+# asyncio.run(remover_schema('public'))

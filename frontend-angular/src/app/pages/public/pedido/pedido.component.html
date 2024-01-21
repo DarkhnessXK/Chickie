@@ -1,12 +1,8 @@
-@if( thisURL.includes('loja') ) {
-  <a [routerLink]="['/loja/pedidos']">Pedidos</a>
-}
-
 
 @if (pedido) {
   <h2>Detalhes do Pedido</h2>
   <p><strong>Celular:</strong> {{ pedido.celular }}</p>
-  <p><strong>Data e Hora:</strong> {{ pedido.data_hora }}</p>
+  <p><strong>Data e Hora:</strong> {{ pedido.data_hora | formatDate }}</p>
 
   <h3>Endereço</h3>
   <p><strong>UF:</strong> {{ pedido.endereco.uf }}</p>

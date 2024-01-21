@@ -3,8 +3,7 @@ from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
 from config import settings as s
 from src.infra.database_postgres.repository import Repository
-from src.infra.database_postgres.manager import DatabaseConnectionManager
-from src.models import Usuario
+from src.domain.models import Usuario
 from src.api.security.scheme import oauth2_scheme
 
 
@@ -22,6 +21,7 @@ async def authenticate_user(
         Optional[Usuario]: O objeto do usuário autenticado
         ou None se a autenticação falhar.
     """
+    from src.infra.database_postgres.manager import DatabaseConnectionManager
     def only_numbers(string: str | None) -> str | None:
         if string is None:
             return None
@@ -83,3 +83,4 @@ async def current_user(
         raise credentials_exception
 
     return user
+

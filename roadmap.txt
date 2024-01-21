@@ -1,0 +1,286 @@
+
+usuario: Listar lojas que segue -> {
+
+    // UserService
+    MODELS:
+    BANCO / MIGRACAO: X
+    ENDPONTS:
+    FRONTEND:
+}
+
+usuario: avaliação de loja -> {
+
+    // LojaService
+    MODELS: X
+    BANCO / MIGRACAO: X
+    ENDPONTS: X
+    FRONTEND:
+}
+
+usuario: avaliação de produto -> {
+
+    // ProdutoService
+    MODELS: X
+    BANCO / MIGRACAO: X
+    ENDPONTS: X
+    FRONTEND:
+}
+
+usuario: Atualizar configuracoes de conta -> {
+
+    // UserService
+
+    MODELS: X
+    BANCO / MIGRACAO: X
+    ENDPONTS: X
+    FRONTEND:
+}
+
+usuario: buscar loja por localização -> {
+
+    // LojaService
+
+    criar tabela EnderecoDeLoja  X
+    criar tabela EnderecoDeUsuario X
+    criar tabela EnderecoDePedido X
+    ENDPOINTS / QUERIES:
+}
+
+admin {
+
+    admin: requisitar pedido so pode ser acessivel à loja ou ao user {
+        ...
+    }
+
+    admin: pesquisar api para pagamento -> {
+        MODELS:
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }
+
+    admin: excluir loja -> {
+        MODELS: x
+        BANCO / MIGRACAO:
+        ENDPONTS: x
+        FRONTEND:
+    }
+
+    admin: excluir user -> {
+        MODELS: x
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }
+
+    admin: inativar loja -> {
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND:
+    }
+}
+
+
+feitos -> {
+
+    loja: Cadastrar pedido para user -> {
+
+        // LojaService
+        MODELS: x
+        BANCO / MIGRACAO: x
+        ENDPONTS: x
+        FRONTEND: x
+    }
+
+    loja: Listar seguidores -> {
+
+        // LojaService
+        MODELS: x
+        BANCO / MIGRACAO: X
+        ENDPONTS: x
+        FRONTEND: x
+    }
+
+
+    loja: loja cadastrar usuario -> {
+
+        // LojaService
+
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: X
+    }
+
+    usuario: seguir loja -> {
+
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: X
+    }
+
+    usuario: listar pedidos -> {
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: x
+    }
+
+    loja: Alteração de status de pedido -> {
+        
+        // PedidoService
+
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: x
+        FRONTEND: x
+    }
+
+    loja: exibir historico -> {
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: x
+    }
+
+    loja: Ajustar pedido para concluido -> {
+
+        // PedidoService
+
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: x
+        FRONTEND: x
+    }
+
+    loja: Atualizacao de imagem para os produtos -> {
+
+        // ProdutoService
+
+        SERVICE: X
+        ENDPONTS: x
+        FRONTEND: x
+    }
+
+    usuario: corrigir logica de aplicação de descontos -> {
+        MODELS: x
+        BANCO / MIGRACAO: x
+        ENDPONTS: x
+    }
+
+    usuario: adicionar comentarios a um item de pedido -> {
+
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: x
+    }
+
+    loja: horarios de funcionamento -> {
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: x
+    }
+
+    loja: Atualizar imagem de perfil -> {
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: X
+    }
+
+    loja: Cadastro de imagem para os produtos -> {
+        SERVICE: X
+        ENDPONTS: x
+        FRONTEND: x
+    }
+
+    loja: Atualizar configuracoes de conta -> {
+
+        // LojaService
+
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: x
+    }
+
+    usuario: adicionar comentarios a um pedido -> {
+
+        MODELS: X
+        BANCO / MIGRACAO: X
+        ENDPONTS: X
+        FRONTEND: x
+    }
+
+}
+
+
+depois -> {
+
+    usuario: buscar loja por avaliação -> [{
+
+        // AvaliacaoService
+
+        ** qual a forma mais rapida de checar a avaliação media de uma empresa,
+        dado que há uma tabela Avaliações e que nela há uma coluna nota? -> {
+            SELECT AVG(nota) AS media_avaliacao
+            FROM Avaliacoes
+            WHERE empresa__uuid = 'ID_DA_EMPRESA';
+        },
+        ** qual a forma mais rapida de checar empresas com
+        avaliação media maior que nota 4, dado que há uma
+        tabela Avaliações e que nela há uma coluna nota? -> {
+            SELECT empresa_id, AVG(nota) AS media_avaliacao
+            FROM Avaliacoes
+            GROUP BY empresa_id
+            HAVING AVG(nota) > 4;
+        }
+    },
+    {
+        MODELS:
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }]
+
+    loja: notificação de promoções -> {
+        MODELS:
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }
+
+    loja: sistemas de ticket / suporte ao cliente -> {
+        MODELS:
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }
+
+    loja: sistema para esqueci a senha -> {
+        MODELS:
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }
+
+    usuario: sistema para esqueci a senha -> {
+        MODELS:
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }
+
+    usuario: definir a senha no primeiro acesso -> {
+        MODELS:
+        BANCO / MIGRACAO:
+        ENDPONTS:
+        FRONTEND:
+    }
+
+}
+

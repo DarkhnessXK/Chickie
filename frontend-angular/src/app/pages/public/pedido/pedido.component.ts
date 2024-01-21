@@ -5,12 +5,13 @@ import { Pedido } from '../../../models/models';
 import { PedidoService, ProdutoService } from '../../../services/services';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormatDatePipe } from '../../../pipes/format-date.pipe';
 
 
 @Component({
   selector: 'app-pedido',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormatDatePipe],
   templateUrl: './pedido.component.html',
   styleUrl: './pedido.component.sass'
 })

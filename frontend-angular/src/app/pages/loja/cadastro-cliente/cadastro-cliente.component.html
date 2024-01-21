@@ -1,0 +1,104 @@
+<div id="userSignUpForm">
+
+  <label for="nome">Nome:</label><br>
+  <input
+    [(ngModel)]="nomeValue"
+    type="text"
+    id="nome"
+    name="nome"
+    required><br>
+
+  <label for="username">Username:</label><br>
+  <input
+    [(ngModel)]="usernameValue"
+    type="text"
+    id="username"
+    name="username"
+    required><br>
+
+  <label for="email">E-mail:</label><br>
+  <input
+    [(ngModel)]="emailValue"
+    type="email"
+    id="email"
+    name="email"
+    required><br>
+
+  <label for="celular">Celular:</label><br>
+  <input
+    [(ngModel)]="celularValue"
+    type="text"
+    id="celular"
+    name="celular"
+    required><br>
+
+  <label for="telefone">Telefone:</label><br>
+  <input
+    [(ngModel)]="telefoneValue"
+    type="text"
+    id="telefone"
+    name="telefone"
+    required><br>
+
+  <h3>Endereço</h3>
+  <br />
+
+  <label for="cep">CEP:</label><br>
+  <input
+    [(ngModel)]="cepValue"
+    mask="00000-000"
+    (input)="getCEPData()"
+    type="text"
+    id="cep"
+    name="cep"
+    required><br>
+
+  <label for="logradouro">Logradouro:</label><br>
+  <input
+    [(ngModel)]="logradouroValue"
+    type="text"
+    id="logradouro"
+    name="logradouro"
+    required><br>
+
+  <label for="numero">Número:</label><br>
+  <input
+    [(ngModel)]="numeroValue"
+    type="text"
+    id="numero"
+    name="numero"
+    required><br>
+
+  <label for="complemento">Complemento:</label><br>
+  <input
+    [(ngModel)]="complementoValue"
+    type="text"
+    id="complemento"
+    name="complemento"><br>
+
+  <label for="bairro">Bairro:</label><br>
+  <input
+    [(ngModel)]="bairroValue"
+    type="text"
+    id="bairro"
+    name="bairro"
+    required><br>
+
+  <label for="cidade">Cidade:</label><br>
+  <input
+    [(ngModel)]="cidadeValue"
+    type="text"
+    id="cidade"
+    name="cidade"
+    required><br>
+
+  <label for="uf">UF:</label><br>
+  <input
+    [(ngModel)]="ufValue"
+    type="text"
+    id="uf"
+    name="uf"
+    required><br>
+
+  <input type="submit" value="Cadastrar" (click)="doSignUp($event)">
+</div>
